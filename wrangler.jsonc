@@ -3,8 +3,17 @@
   "name": "portfolio",
   "main": "./worker.js",
   "compatibility_date": "2026-09-02",
+
   "assets": {
     "directory": ".",
     "binding": "ASSETS"
-  }
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "portfolio-views",
+      "database_id": "dc9cbc1e-5913-40c0-858c-7e100106b39b"
+    }
+  ]
 }
