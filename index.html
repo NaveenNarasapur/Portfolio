@@ -588,66 +588,68 @@
 <script>
 
 
- const counter = document.getElementById("hitCounter");
 
-// Register this page visit ONCE
-async function registerVisit() {
-  try {
-    const response = await fetch("/api/visit", {
-      cache: "no-store"
-    });
+  const counter = document.getElementById("hitCounter");
 
-    if (!response.ok) {
-      throw new Error("Failed to register visit");
-    }
+  // Register this page visit ONCE
+  async function registerVisit() {
+    try {
+      const response = await fetch("/api/visit", {
+        cache: "no-store"
+      });
 
-    const data = await response.json();
+      if (!response.ok) {
+        throw new Error("Failed to register visit");
+      }
 
-    counter.textContent = data.count;
+      const data = await response.json();
 
-  } catch (error) {
-    console.error("Visitor count error:", error);
-    counter.textContent = "—";
-  }
-}
-
-
-// Fetch the current count WITHOUT increasing it
-async function fetchCurrentCount() {
-  try {
-    const response = await fetch("/api/visit-count", {
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch visitor count");
-    }
-
-    const data = await response.json();
-
-    // Update only when the count has changed
-    if (counter.textContent !== String(data.count)) {
       counter.textContent = data.count;
 
-      // Your existing .updated CSS effect
-      counter.classList.add("updated");
-
-      setTimeout(() => {
-        counter.classList.remove("updated");
-      }, 500);
+    } catch (error) {
+      console.error("Visitor count error:", error);
+      counter.textContent = "—";
     }
-
-  } catch (error) {
-    console.error("Visitor count refresh error:", error);
   }
-}
 
 
-// Count this visit once
-registerVisit();
+  // Fetch current count WITHOUT increasing it
+  async function fetchCurrentCount() {
+    try {
+      const response = await fetch("/api/visit?read=1", {
+        cache: "no-store"
+      });
 
-// Then check for changes every 3 seconds
-setInterval(fetchCurrentCount, 1000);
+      if (!response.ok) {
+        throw new Error("Failed to fetch current visitor count");
+      }
+
+      const data = await response.json();
+
+      if (counter.textContent !== String(data.count)) {
+
+        counter.textContent = data.count;
+
+        // Your existing animation
+        counter.classList.add("updated");
+
+        setTimeout(() => {
+          counter.classList.remove("updated");
+        }, 500);
+      }
+
+    } catch (error) {
+      console.error("Visitor count refresh error:", error);
+    }
+  }
+
+
+  // Count this visit once
+  registerVisit();
+
+  // Check the latest count every 3 seconds
+  setInterval(fetchCurrentCount, 1000);
+
 
 
 
