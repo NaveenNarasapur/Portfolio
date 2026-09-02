@@ -588,26 +588,66 @@
 <script>
 
 
-  async function updateVisitorCount() {
-    const counter = document.getElementById("hitCounter");
+ const counter = document.getElementById("hitCounter");
 
-    try {
-      const response = await fetch("/api/visit");
+// Register this page visit ONCE
+async function registerVisit() {
+  try {
+    const response = await fetch("/api/visit", {
+      cache: "no-store"
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch visitor count");
-      }
-
-      const data = await response.json();
-
-      counter.textContent = data.count;
-    } catch (error) {
-      console.error("Visitor counter error:", error);
-      counter.textContent = "—";
+    if (!response.ok) {
+      throw new Error("Failed to register visit");
     }
-  }
 
-  updateVisitorCount();
+    const data = await response.json();
+
+    counter.textContent = data.count;
+
+  } catch (error) {
+    console.error("Visitor count error:", error);
+    counter.textContent = "—";
+  }
+}
+
+
+// Fetch the current count WITHOUT increasing it
+async function fetchCurrentCount() {
+  try {
+    const response = await fetch("/api/visit-count", {
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch visitor count");
+    }
+
+    const data = await response.json();
+
+    // Update only when the count has changed
+    if (counter.textContent !== String(data.count)) {
+      counter.textContent = data.count;
+
+      // Your existing .updated CSS effect
+      counter.classList.add("updated");
+
+      setTimeout(() => {
+        counter.classList.remove("updated");
+      }, 500);
+    }
+
+  } catch (error) {
+    console.error("Visitor count refresh error:", error);
+  }
+}
+
+
+// Count this visit once
+registerVisit();
+
+// Then check for changes every 3 seconds
+setInterval(fetchCurrentCount, 1000);
 
 
 
