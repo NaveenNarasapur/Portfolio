@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,53 +7,71 @@
 <meta name="description" content="Naveen Nagesh Narasapur — Computer Science (AI) undergraduate. SQL, OIC integrations, unsupervised learning for DDoS detection, zero-shot image classification.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Nunito+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
-  // Default to dark; only switch to light if the OS explicitly prefers it.
-  // (No localStorage — theme choice is per-session only.)
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-    document.documentElement.setAttribute('data-theme', 'light');
-  }
+  // Starts in light theme (set via data-theme="light" on <html>). Theme choice is
+  // per-session only (no localStorage); the toggle button switches to dark manually.
 </script>
 <style>
   :root{
-    --bg: #090d15;
-    --bg-elev: #0f1621;
-    --surface: #121b29;
-    --border: #1e2c3f;
-    --cyan: #45c7f0;
-    --cyan-dim: #2a5468;
-    --amber: #f6b34d;
-    --text: #dfe8f2;
-    --heading: #f2f6fb;
-    --muted: #8093ac;
-    --muted-2: #56637a;
-    --shadow: rgba(0,0,0,0.6);
-    --grid-line: rgba(69,199,240,0.035);
-    --nav-bg: rgba(9,13,21,0.82);
-    --mono: 'JetBrains Mono', ui-monospace, monospace;
-    --sans: 'Inter', -apple-system, sans-serif;
+    --bg: #2e3030;
+    --vignette-hi: #383a3a;
+    --vignette-lo: #2e3030;
+    --bg-elev: #1a1c1b;
+    --surface: #212322;
+    --border: #4b4d4b;
+    --cyan: #58a6ff;
+    --cyan-dim: #35526e;
+    --cyan-rgb: 88,166,255;
+    --amber: #3fb950;
+    --amber-dim: #274a30;
+    --text: #a9adac;
+    --heading: #e6edf3;
+    --muted: #a9adac;
+    --muted-2: #7d817f;
+    --shadow: rgba(0,0,0,0.5);
+    --grid-line: rgba(88,166,255,0.035);
+    --nav-bg: rgba(46,48,48,0.88);
+    --success: #3fb950;
+    --success-dim: rgba(63,185,80,0.5);
+    --danger-dim: rgba(63,185,80,0.35);
+    --green-rgb: 63,185,80;
+    --mono: 'Space Mono', ui-monospace, monospace;
+    --sans: 'Nunito Sans', -apple-system, sans-serif;
+    --serif: 'Poppins', 'Nunito Sans', -apple-system, sans-serif;
   }
   html[data-theme="light"]{
-    --bg: #f4f7fb;
-    --bg-elev: #ffffff;
-    --surface: #ffffff;
-    --border: #dbe3ee;
-    --cyan: #0f8fc4;
-    --cyan-dim: #a9d8ec;
-    --amber: #b9791b;
-    --text: #16202e;
-    --heading: #0a1524;
-    --muted: #5b6b83;
-    --muted-2: #8494ac;
-    --shadow: rgba(20,40,70,0.1);
-    --grid-line: rgba(15,143,196,0.05);
-    --nav-bg: rgba(244,247,251,0.82);
+    --bg: #faf7f2;
+    --vignette-hi: #fffdfa;
+    --vignette-lo: #e8e0d4;
+    --bg-elev: #e8e0d4;
+    --surface: #f2ece2;
+    --border: #d4cbbe;
+    --cyan: #86763f;
+    --cyan-dim: #dcd9bf;
+    --cyan-rgb: 134,118,63;
+    --amber: #a16207;
+    --amber-dim: #ddd1b0;
+    --text: #57534e;
+    --heading: #1c1917;
+    --muted: #57534e;
+    --muted-2: #a8a29e;
+    --shadow: rgba(28,25,23,0.12);
+    --grid-line: rgba(134,118,63,0.05);
+    --nav-bg: rgba(250,247,242,0.88);
+    --success: #a16207;
+    --success-dim: rgba(161,98,7,0.4);
+    --danger-dim: rgba(161,98,7,0.3);
+    --green-rgb: 26,127,55;
   }
+  /* badge/pulse "available" and "in progress" indicators are always true green, in both themes */
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
     background:var(--bg);
+    background-image:radial-gradient(ellipse 160% 140% at 50% 40%, var(--vignette-hi) 0%, var(--bg) 45%, var(--vignette-lo) 100%);
+    background-attachment:fixed;
+    background-size:100% 100vh;
     color:var(--text);
     font-family:var(--sans);
     line-height:1.6;
@@ -84,7 +102,7 @@
     border-bottom:1px solid var(--border);
   }
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;}
-  .brand{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--cyan);letter-spacing:0.5px;}
+  .brand{font-family:var(--serif);font-weight:700;font-size:19px;color:var(--cyan);letter-spacing:0.5px;}
   .brand .dot{color:var(--amber);}
   .navlinks{display:flex;gap:28px;font-family:var(--mono);font-size:13px;color:var(--muted);}
   .navlinks a{position:relative;padding:4px 0;transition:color .2s;}
@@ -110,12 +128,12 @@
     background:#0c121c;
     border-bottom:1px solid var(--border);
   }
-  .term-bar span{width:10px;height:10px;border-radius:50%;background:#2a3548;}
+  .term-bar span{width:10px;height:10px;border-radius:50%;background:var(--border);}
   .term-bar .id{margin-left:8px;font-family:var(--mono);font-size:11px;color:var(--muted-2);}
   .term-body{padding:18px 20px;font-family:var(--mono);font-size:13px;color:var(--muted);min-height:150px;}
   .term-body .ln{margin-bottom:6px;white-space:pre-wrap;}
   .term-body .prompt{color:var(--amber);}
-  .term-body .ok{color:#5fd88f;}
+  .term-body .ok{color:var(--success);}
   .term-body .cursor{display:inline-block;width:7px;height:14px;background:var(--cyan);margin-left:2px;vertical-align:middle;animation:blink 1s step-end infinite;}
   @keyframes blink{50%{opacity:0;}}
 
@@ -124,23 +142,23 @@
   .avail-badge{
     display:inline-flex;align-items:center;gap:9px;
     font-family:var(--mono);font-size:12px;font-weight:600;
-    color:#5fd88f;letter-spacing:1px;text-transform:uppercase;
-    background:rgba(95,216,143,0.08);
+    color:rgba(var(--green-rgb),1);letter-spacing:1px;text-transform:uppercase;
+    background:rgba(var(--green-rgb),0.1);
     padding:8px 16px;border-radius:999px;margin-bottom:22px;
   }
-  .avail-badge .pulse{width:8px;height:8px;border-radius:50%;background:#5fd88f;flex-shrink:0;animation:pulse 1.6s infinite;}
-  h1{font-size:clamp(34px,5.5vw,54px);font-weight:800;letter-spacing:-1px;line-height:1.08;color:var(--heading);}
+  .avail-badge .pulse{width:8px;height:8px;border-radius:50%;background:rgba(var(--green-rgb),1);flex-shrink:0;animation:pulseGreen 1.6s infinite;}
+  h1{font-family:var(--serif);font-size:clamp(38px,6vw,60px);font-weight:700;letter-spacing:-0.5px;line-height:1.08;color:var(--heading);}
   h1 .accent{color:var(--cyan);}
   .tagline{margin-top:18px;font-size:17px;color:var(--muted);max-width:600px;}
-  .tagline b{color:var(--text);font-weight:600;}
+  .tagline b{color:var(--heading);font-weight:600;}
   .hero-cta{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap;}
   .btn{
     font-family:var(--mono);font-size:13px;padding:12px 20px;border-radius:4px;
     display:inline-flex;align-items:center;gap:8px;transition:.2s;
   }
-  .btn-primary{background:var(--cyan);color:#04141c;font-weight:600;}
-  .btn-primary:hover{background:#6dd4f5;}
-  .btn-ghost{border:1px solid var(--border);color:var(--text);}
+  .btn-primary{background:var(--cyan);color:#211c0c;font-weight:600;}
+  .btn-primary:hover{background:var(--amber);}
+  .btn-ghost{border:1px solid var(--border);color:var(--heading);}
   .btn-ghost:hover{border-color:var(--cyan-dim);color:var(--cyan);}
 
   /* STAT STRIP */
@@ -158,7 +176,7 @@
   section{padding:80px 0;position:relative;z-index:1;}
   .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:40px;}
   .sec-num{font-family:var(--mono);color:var(--muted-2);font-size:14px;}
-  .sec-title{font-size:26px;font-weight:700;color:var(--heading);letter-spacing:-0.3px;}
+  .sec-title{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--heading);letter-spacing:-0.2px;}
   .sec-title::after{content:"";display:block;width:34px;height:2px;background:var(--cyan);margin-top:10px;}
 
   /* PACKET DIVIDER (signature element) */
@@ -168,17 +186,17 @@
   }
   .packet-divider svg{width:100%;height:100%;overflow:visible;}
   .packet-line{stroke:var(--border);stroke-width:1;stroke-dasharray:4 6;}
-  .packet-dot{fill:var(--cyan);filter:drop-shadow(0 0 4px rgba(69,199,240,0.8));}
+  .packet-dot{fill:var(--cyan);filter:drop-shadow(0 0 4px rgba(var(--cyan-rgb),0.8));}
 
   /* ABOUT */
   .about-body{color:var(--muted);font-size:15.5px;max-width:700px;}
   .about-body p{margin-bottom:16px;}
-  .about-body b{color:var(--text);}
+  .about-body b{color:var(--heading);}
 
   /* SKILLS */
   .skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;}
   .skill-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;}
-  .skill-card .cat{font-family:var(--mono);font-size:11px;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+  .skill-card .cat{font-family:var(--mono);font-size:11px;color:var(--amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
   .chip-row{display:flex;flex-wrap:wrap;gap:8px;}
   .chip{
     font-family:var(--mono);font-size:12.5px;color:var(--text);
@@ -188,12 +206,15 @@
   .skill-card:hover .chip{border-color:var(--cyan-dim);}
 
   /* EXPERIENCE */
+  .exp-stack{display:flex;flex-direction:column;gap:20px;}
   .exp-card{
     background:var(--surface);border:1px solid var(--border);border-radius:8px;
     padding:26px 28px;position:relative;
   }
+  .exp-placeholder{color:var(--muted-2);font-style:italic;}
+  .exp-placeholder::before{color:var(--muted-2)!important;}
   .exp-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
-  .exp-role{font-size:18px;font-weight:700;color:var(--heading);}
+  .exp-role{font-family:var(--serif);font-size:21px;font-weight:700;color:var(--heading);}
   .exp-org{color:var(--cyan);font-weight:600;font-size:15px;}
   .exp-date{font-family:var(--mono);font-size:12px;color:var(--muted-2);white-space:nowrap;}
   .exp-list{list-style:none;color:var(--muted);font-size:14.5px;}
@@ -201,11 +222,11 @@
   .exp-list li::before{content:"›";position:absolute;left:0;color:var(--amber);font-weight:700;}
   .status-pill{
     display:inline-flex;align-items:center;gap:6px;
-    font-family:var(--mono);font-size:11px;color:#5fd88f;
+    font-family:var(--mono);font-size:11px;color:rgba(var(--green-rgb),1);
     margin-top:14px;
   }
-  .status-pill .pulse{width:7px;height:7px;border-radius:50%;background:#5fd88f;animation:pulse 1.6s infinite;}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,216,143,0.6);}70%{box-shadow:0 0 0 7px rgba(95,216,143,0);}100%{box-shadow:0 0 0 0 rgba(95,216,143,0);}}
+  .status-pill .pulse{width:7px;height:7px;border-radius:50%;background:rgba(var(--green-rgb),1);animation:pulseGreen 1.6s infinite;}
+  @keyframes pulseGreen{0%{box-shadow:0 0 0 0 rgba(var(--green-rgb),0.5);}70%{box-shadow:0 0 0 7px rgba(var(--green-rgb),0);}100%{box-shadow:0 0 0 0 rgba(var(--green-rgb),0);}}
 
   /* PROJECTS */
   .proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;}
@@ -213,15 +234,15 @@
     background:var(--surface);border:1px solid var(--border);border-radius:8px;
     padding:26px;display:flex;flex-direction:column;transition:.25s;
   }
-  .proj-card:hover{transform:translateY(-3px);border-color:var(--cyan-dim);box-shadow:0 16px 40px -18px rgba(69,199,240,0.25);}
+  .proj-card:hover{transform:translateY(-3px);border-color:var(--cyan-dim);box-shadow:0 16px 40px -18px rgba(var(--cyan-rgb),0.25);}
   .proj-card-header{display:flex;justify-content:flex-end;margin-bottom:-6px;}
   .proj-arrow{font-family:var(--mono);color:var(--muted-2);font-size:15px;transition:.2s;}
   .proj-card:hover .proj-arrow{color:var(--cyan);transform:translate(2px,-2px);}
   .proj-tag{font-family:var(--mono);font-size:10.5px;color:var(--amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
-  .proj-title{font-size:18px;font-weight:700;color:var(--heading);margin-bottom:10px;}
+  .proj-title{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--heading);margin-bottom:10px;}
   .proj-desc{color:var(--muted);font-size:14.5px;flex-grow:1;margin-bottom:16px;}
   .proj-stack{display:flex;flex-wrap:wrap;gap:7px;}
-  .proj-stack span{font-family:var(--mono);font-size:11px;color:var(--cyan);background:rgba(69,199,240,0.08);border:1px solid var(--cyan-dim);padding:3px 9px;border-radius:3px;}
+  .proj-stack span{font-family:var(--mono);font-size:11px;color:var(--cyan);background:rgba(var(--cyan-rgb),0.08);border:1px solid var(--cyan-dim);padding:3px 9px;border-radius:3px;}
   .counter{font-family:var(--mono);font-weight:700;color:var(--cyan);transition:.2s;}
   .counter.updated{color:var(--amber);}
 
@@ -236,7 +257,7 @@
   }
   .cert-link:hover{color:var(--amber);border-color:var(--amber);}
   .ach-icon{font-family:var(--mono);font-size:20px;color:var(--amber);flex-shrink:0;line-height:1;}
-  .ach-title{font-weight:700;color:var(--heading);font-size:15px;margin-bottom:4px;}
+  .ach-title{font-family:var(--serif);font-weight:700;color:var(--heading);font-size:17px;margin-bottom:4px;}
   .ach-desc{color:var(--muted);font-size:13.5px;}
 
   /* EDUCATION */
@@ -249,7 +270,7 @@
     background:var(--bg);border:2px solid var(--cyan);
   }
   .edu-date{font-family:var(--mono);font-size:12px;color:var(--muted-2);}
-  .edu-school{font-weight:700;color:var(--heading);font-size:16px;margin:4px 0 2px;}
+  .edu-school{font-family:var(--serif);font-weight:700;color:var(--heading);font-size:19px;margin:4px 0 2px;}
   .edu-detail{color:var(--muted);font-size:14px;}
 
   /* CONTACT */
@@ -283,31 +304,31 @@
   html[data-theme="light"] .theme-toggle .icon-sun{display:none;}
   html[data-theme="light"] .theme-toggle .icon-moon{display:block;}
 
-  /* BOOT LOADER */
+  /* BOOT LOADER — follows the active theme (light by default) */
   #loader{
     position:fixed;inset:0;z-index:999;
-    background:#090d15;
+    background:var(--bg);
     display:flex;align-items:center;justify-content:center;
     transition:opacity .5s ease, visibility .5s ease;
   }
   #loader.done{opacity:0;visibility:hidden;pointer-events:none;}
   .loader-win{
     width:min(90vw,460px);
-    background:#0f1621;border:1px solid #1e2c3f;border-radius:8px;
-    overflow:hidden;box-shadow:0 30px 80px -20px rgba(0,0,0,0.7);
+    background:var(--surface);border:1px solid var(--border);border-radius:8px;
+    overflow:hidden;box-shadow:0 30px 80px -20px var(--shadow);
   }
-  .loader-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:#0c121c;border-bottom:1px solid #1e2c3f;}
+  .loader-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--bg-elev);border-bottom:1px solid var(--border);}
   .loader-bar span{width:10px;height:10px;border-radius:50%;}
-  .loader-bar span:nth-child(1){background:#e0605280;}
-  .loader-bar span:nth-child(2){background:#f6b34d80;}
-  .loader-bar span:nth-child(3){background:#5fd88f80;}
-  .loader-bar .lt{margin-left:8px;font-family:var(--mono);font-size:11px;color:#56637a;}
+  .loader-bar span:nth-child(1){background:#ff5f57;}
+  .loader-bar span:nth-child(2){background:#ffbd2e;}
+  .loader-bar span:nth-child(3){background:#28c840;}
+  .loader-bar .lt{margin-left:8px;font-family:var(--mono);font-size:11px;color:var(--muted-2);}
   .loader-body{padding:20px 22px;font-family:var(--mono);font-size:13px;min-height:150px;}
-  .loader-body .ll{opacity:0;transform:translateY(3px);animation:llIn .35s forwards;margin-bottom:8px;color:#8093ac;}
-  .loader-body .ll .lp{color:#f6b34d;}
-  .loader-body .ll .lo{color:#45c7f0;}
-  .loader-body .ll .lk{color:#5fd88f;}
-  .loader-body .ll .lw{color:#dfe8f2;}
+  .loader-body .ll{opacity:0;transform:translateY(3px);animation:llIn .35s forwards;margin-bottom:8px;color:var(--muted);}
+  .loader-body .ll .lp{color:var(--cyan);}
+  .loader-body .ll .lo{color:#e3b341;}
+  .loader-body .ll .lk{color:var(--success);}
+  .loader-body .ll .lw{color:var(--heading);}
   .loader-body .ll.l1{animation-delay:.1s;}
   .loader-body .ll.l2{animation-delay:.6s;}
   .loader-body .ll.l3{animation-delay:1.1s;}
@@ -315,7 +336,7 @@
   .loader-body .ll.l5{animation-delay:2.1s;}
   .loader-body .ll.l6{animation-delay:2.6s;}
   @keyframes llIn{to{opacity:1;transform:none;}}
-  .loader-body .lcursor{display:inline-block;width:7px;height:13px;background:#45c7f0;margin-left:2px;vertical-align:middle;opacity:0;animation:llIn .3s forwards 3s, blink 1s step-end infinite 3s;}
+  .loader-body .lcursor{display:inline-block;width:7px;height:13px;background:var(--cyan);margin-left:2px;vertical-align:middle;opacity:0;animation:llIn .3s forwards 3s, blink 1s step-end infinite 3s;}
   @media (prefers-reduced-motion:reduce){
     *{animation:none!important;transition:none!important;}
     #loader{display:none;}
@@ -328,9 +349,9 @@
   <div class="loader-win">
     <div class="loader-bar"><span></span><span></span><span></span><div class="lt">naveen: ~</div></div>
     <div class="loader-body">
-      <p class="ll l1"><span class="lp">$</span> ssh naveen@naveen.dev</p>
+      <p class="ll l1"><span class="lp">$</span> ssh naveen@portfolio</p>
       <p class="ll l2"><span class="lo">›</span> Establishing secure connection…</p>
-      <p class="ll l3"><span class="lk">✓</span> Authenticated as <span class="lw">naveen</span></p>
+      <p class="ll l3"><span class="lk">✓</span> Authenticated as <span class="lw">Naveen</span></p>
       <p class="ll l4"><span class="lp">$</span> load-portfolio --mode=production</p>
       <p class="ll l5"><span class="lo">›</span> Compiling projects &amp; experience…</p>
       <p class="ll l6"><span class="lk">✓</span> Ready. <span class="lw">Welcome.</span><span class="lcursor"></span></p>
@@ -344,10 +365,10 @@
   <div class="wrap">
     <div class="brand">NNN</div>
     <div class="navlinks">
-      <a href="#skills">skills</a>
-      <a href="#experience">experience</a>
-      <a href="#projects">projects</a>
-      <a href="#education">education</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#education">Education</a>
     </div>
     <a class="nav-cta" href="Documents\Naveen_Narasapur_Resume_Updated.pdf" target="_blank" rel="noopener">resume.pdf</a>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" type="button">
@@ -371,9 +392,44 @@
   <svg preserveAspectRatio="none"><line x1="0" y1="17" x2="100%" y2="17" class="packet-line"/></svg>
 </div>
 
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">01.</span><h2 class="sec-title">Work Experience</h2></div>
+    <div class="exp-stack">
+      <div class="exp-card">
+        <div class="exp-top">
+          <div><div class="exp-role">Analyst</div><div class="exp-org">KPMG Global Services</div></div>
+          <div class="exp-date">Sep 2026 — Present</div>
+        </div>
+        <ul class="exp-list">
+          <li class="exp-placeholder">Details coming soon.</li>
+        </ul>
+        <div class="status-pill"><span class="pulse"></span> in progress</div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-top">
+          <div><div class="exp-role">Intern</div><div class="exp-org">KPMG Global Services</div></div>
+          <div class="exp-date">Jan 2026 — Jul 2026</div>
+        </div>
+        <ul class="exp-list">
+       <li>Completed structured soft-skills training covering professional communication, teamwork, and corporate etiquette.</li>
+        <li>Worked with SQL and PL/SQL, writing queries, joins, and stored procedures against real datasets.</li>
+        <li>Gained hands-on experience with Oracle Integration Cloud (OIC), including integrations, adapters, and workflow design.</li>
+        <li>Built real-time OIC integrations to handle data flow between different systems.</li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="packet-divider" aria-hidden="true">
+  <svg preserveAspectRatio="none"><line x1="0" y1="17" x2="100%" y2="17" class="packet-line"/></svg>
+</div>
+
 <section id="skills">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">01.</span><h2 class="sec-title">Technical Skills</h2></div>
+    <div class="sec-head"><span class="sec-num">02.</span><h2 class="sec-title">Technical Skills</h2></div>
     <div class="skill-grid">
       <div class="skill-card">
         <div class="cat">Programming</div>
@@ -403,30 +459,6 @@
         <div class="cat">AI &amp; Machine Learning</div>
         <div class="chip-row"><span class="chip">Regression</span><span class="chip">Classification</span><span class="chip">Clustering</span><span class="chip">Reinforcement Learning</span><span class="chip">Retrieval-Augmented Generation (RAG)</span><span class="chip">Fine-tuning</span></div>
       </div>
-    </div>
-  </div>
-</section>
-
-<div class="packet-divider" aria-hidden="true">
-  <svg preserveAspectRatio="none"><line x1="0" y1="17" x2="100%" y2="17" class="packet-line"/></svg>
-</div>
-
-<section id="experience">
-  <div class="wrap">
-    <div class="sec-head"><span class="sec-num">02.</span><h2 class="sec-title">Work Experience</h2></div>
-    <div class="exp-card">
-      <div class="exp-top">
-        <div><div class="exp-role">Intern</div><div class="exp-org">KPMG Global Services</div></div>
-        <div class="exp-date">Jan 2026 — Jul 2026</div>
-      </div>
-      <ul class="exp-list">
-     <li>Completed structured soft-skills training covering professional communication, teamwork, and corporate etiquette.</li>
-      <li>Worked with SQL and PL/SQL, writing queries, joins, and stored procedures against real datasets.</li>
-      <li>Gained hands-on experience with Oracle Integration Cloud (OIC), including integrations, adapters, and workflow design.</li>
-      <li>Built real-time OIC integrations to handle data flow between different systems.</li>
-
-      </ul>
-      <div class="status-pill"><span class="pulse"></span> in progress</div>
     </div>
   </div>
 </section>
@@ -466,7 +498,7 @@
   <div class="proj-title">Visit Counter</div>
 
   <div class="proj-title">
-    This page: <span id="hitCounter" class="counter">loading…</span> visits.
+    Page views : <span id="hitCounter" class="counter">loading…</span> 
   </div>
 
   <div class="proj-desc">
@@ -574,7 +606,7 @@
       <h2 class="sec-title" style="display:inline-block;">Get in touch</h2>
       <p>I'm currently open to opportunities in backend systems, data engineering, and applied machine learning. I'm eager to learn, contribute, and grow in a professional environment. Please feel free to reach out — I'd be happy to connect and discuss potential opportunities.</p>
       <div class="contact-links">
-        <a class="btn btn-primary" href="mailto:naveennarasapur05@gmail.com">✉ naveennarasapur05@gmail.com</a>
+        <a class="btn btn-ghost" href="mailto:naveennarasapur05@gmail.com">✉ naveennarasapur05@gmail.com</a>
         <a class="btn btn-ghost" href="https://www.linkedin.com/in/naveen-narasapur-936226256" target="_blank" rel="noopener"> LinkedIn</a>
       </div>
     </div>
@@ -582,7 +614,7 @@
 </section>
 
 <footer>
-  Naveen Nagesh Narasapur · Built with Claude Code
+  Naveen Nagesh Narasapur 
 </footer>
 
 <script>
