@@ -4,6 +4,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BASE = "https://naveen-narasapur.in"
+import hashlib
+CSS_V = hashlib.sha1((ROOT / "assets" / "style.css").read_bytes()).hexdigest()[:8]  # cache-busting
 
 def box(x, y, w, label, sub=""):
     s = f'<rect x="{x}" y="{y}" width="{w}" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/>'
@@ -40,7 +42,7 @@ def pipeline(steps, caption):
 PAGES = {
 "geosnap": dict(
   title="GeoSnap: privacy-first geotagging camera PWA",
-  desc="Case study: a React + TypeScript PWA that embeds and verifies GPS EXIF in camera JPEGs entirely in the browser, with lossless metadata rewriting and automated tests.",
+  desc="Case study: a React + TypeScript PWA that embeds and verifies GPS EXIF in camera JPEGs entirely in the browser, with lossless metadata rewriting.",
   meta=["2026", "Solo project", "React 19 · TypeScript · Vite · piexifjs · Workbox · Cloudflare Pages",
         '<a href="https://github.com/NaveenNarasapur/geosnap">Source on GitHub</a>'],
   body=f"""
@@ -66,9 +68,6 @@ PAGES = {
 <tr><td>Lazy-load the editor</td><td>One bundle</td><td>Keeps first load at ~82 kB gzip; the overlay editor (~18 kB) loads on demand.</td></tr>
 </table>
 
-<h2>Testing</h2>
-<p>EXIF unit tests run real JPEGs through embed → read-back with both piexifjs and exifr, covering all four hemispheres, below-sea-level altitude, missing altitude and a seconds-rounding edge case, and assert the compressed scan data is byte-identical. An end-to-end Playwright suite runs Chrome with a fake camera, mocked geolocation and mocked Nominatim at a mobile viewport: permissions, capture at 3840×2160, all five overlay templates, offline mode, and that camera tracks end after navigation. Results are recorded in <a href="https://github.com/NaveenNarasapur/geosnap/blob/main/TESTING.md">TESTING.md</a>.</p>
-
 <h2>Limitations</h2>
 <ul>
 <li>PNG and WebP GPS metadata is not reliably read by common photo viewers, so those exports show coordinates only as an overlay, and the UI says so.</li>
@@ -76,7 +75,7 @@ PAGES = {
 <li>Real-device checks (GPS accuracy outdoors, iOS install flow) are still a manual checklist.</li>
 </ul>
 <h2>Next version</h2>
-<ul><li>Run the test suites in CI (GitHub Actions) on every push.</li><li>Batch capture with a per-session GPX track export.</li><li>Optional signed hash of image + coordinates to make tampering detectable.</li></ul>
+<ul><li>Add automated EXIF round-trip tests and run them in CI on every push.</li><li>Batch capture with a per-session GPX track export.</li><li>Optional signed hash of image + coordinates to make tampering detectable.</li></ul>
 """),
 
 "webhook-relay": dict(
@@ -208,7 +207,7 @@ TEMPLATE = """<!doctype html>
 <meta property="og:url" content="{url}">
 <meta property="og:image" content="{base}/assets/og.png">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/style.css?v={CSS_V}">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -230,7 +229,7 @@ TEMPLATE = """<!doctype html>
 
 for slug, p in PAGES.items():
     url = f"{BASE}/projects/{slug}.html"
-    html = TEMPLATE.format(title=p["title"], desc=p["desc"], url=url, base=BASE,
+    html = TEMPLATE.format(CSS_V=CSS_V, title=p["title"], desc=p["desc"], url=url, base=BASE,
                            meta="".join(f"<span>{m}</span>" for m in p["meta"]), body=p["body"])
     (ROOT / "projects" / f"{slug}.html").write_text(html, encoding="utf-8")
     print("wrote", slug)
