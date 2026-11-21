@@ -1,0 +1,12 @@
+# Keep source, notes and internal docs out of the public site
+.git
+.assetsignore
+worker.js
+wrangler.jsonc
+README.md
+tools
+docs
+resume/src
+_backup_original
+node_modules
+*.md

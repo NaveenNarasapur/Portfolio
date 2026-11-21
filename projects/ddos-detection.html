@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DDoS flow detection: ML pipeline + inference service — Naveen Narasapur</title>
+<meta name="description" content="Case study: leakage-aware DDoS detection on CIC-IDS2017 (223K flows), five models compared under a temporal split, Random Forest served by an authenticated FastAPI service. F1 0.998 at 0.02% false-positive rate.">
+<link rel="canonical" href="https://naveen-narasapur.in/projects/ddos-detection.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDoS flow detection: ML pipeline + inference service">
+<meta property="og:description" content="Case study: leakage-aware DDoS detection on CIC-IDS2017 (223K flows), five models compared under a temporal split, Random Forest served by an authenticated FastAPI service. F1 0.998 at 0.02% false-positive rate.">
+<meta property="og:url" content="https://naveen-narasapur.in/projects/ddos-detection.html">
+<meta property="og:image" content="https://naveen-narasapur.in/assets/og.png">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="wrap">
+  <a class="brand" href="/">Naveen Narasapur</a>
+  <nav aria-label="Primary"><ul><li><a href="/#experience">Experience</a></li><li><a href="/#projects">Projects</a></li><li><a href="/resume.pdf">Resume</a></li></ul></nav>
+</div></header>
+<main id="main"><div class="wrap"><article>
+<p class="crumb"><a href="/#projects">← All projects</a></p>
+<h1>DDoS flow detection: ML pipeline + inference service</h1>
+<div class="meta"><span>2025 → rebuilt 2026</span><span>Python · scikit-learn · FastAPI</span><span><a href="https://github.com/NaveenNarasapur/ddos-detection">Source on GitHub</a></span></div>
+
+<p class="note">Defensive project: detection only, on a public offline dataset. No traffic generation.</p>
+<h2>Problem</h2>
+<p>Classify network flows (CICFlowMeter features) as benign or DDoS so that false alarms stay rare, because every alert costs analyst time. The project began in 2025 as unsupervised BIRCH clustering with a Proof-of-Work mitigation layer; in 2026 I rebuilt it as a reproducible, tested pipeline and kept the original approach as a baseline.</p>
+
+<h2>Pipeline</h2>
+<figure><svg viewBox="-2 0 706 152" role="img" aria-label="Preprocessing is part of the serialised sklearn Pipeline, so serving applies exactly what training fitted." style="color:var(--text);font-family:var(--sans)"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor" fill-opacity=".6"/></marker></defs><rect x="0" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="75.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">CIC-IDS2017 CSV</text><text x="75.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">225,745 flows</text><line x1="150" y1="29" x2="181" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="184" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="259.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Clean</text><text x="259.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">drop IDs · NaN/inf · dupes</text><line x1="334" y1="29" x2="365" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="368" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="443.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Temporal split</text><text x="443.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">train past / test future</text><line x1="518" y1="29" x2="549" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="552" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="627.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Preprocess</text><text x="627.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">fitted on train only</text><path d="M627.0 56 V76 H75.0 V93" fill="none" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="0" y="96" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="75.0" y="120" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">5 models</text><text x="75.0" y="138" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">LR · DT · RF · HGB · BIRCH</text><line x1="150" y1="123" x2="181" y2="123" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="184" y="96" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="259.0" y="120" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Evaluate</text><text x="259.0" y="138" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">F1 · FPR · ROC-AUC</text><line x1="334" y1="123" x2="365" y2="123" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="368" y="96" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="443.0" y="120" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">FastAPI</text><text x="443.0" y="138" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">API key · dashboard</text></svg><figcaption>Preprocessing is part of the serialised sklearn Pipeline, so serving applies exactly what training fitted.</figcaption></figure>
+
+<h2>Results (temporal split, 44,617 test flows)</h2>
+<table>
+<tr><th>Model</th><th>F1</th><th>Recall</th><th>False-positive rate</th></tr>
+<tr><td>Logistic regression</td><td>0.9931</td><td>0.9963</td><td>0.36%</td></tr>
+<tr><td>Decision tree</td><td>0.9983</td><td>0.9977</td><td>0.04%</td></tr>
+<tr><td><b>Random forest (served)</b></td><td>0.9977</td><td>0.9959</td><td><b>0.02%</b> (6 / 32,767)</td></tr>
+<tr><td>Hist. gradient boosting</td><td>0.9986</td><td>0.9977</td><td>0.02%</td></tr>
+<tr><td>BIRCH (original unsupervised approach)</td><td>0.4216</td><td>1.0000</td><td>99.2%</td></tr>
+</table>
+<p><b>What the numbers do and don't say.</b> This file contains one LOIC attack and is close to linearly separable, so near-perfect supervised scores mostly reflect the dataset. The informative results are the differences:</p>
+<ul>
+<li>Random Forest was chosen by a rule fixed in advance: lowest false-positive rate with recall ≥ 99%.</li>
+<li>Removing the <code>Init_Win_bytes_*</code> features, which partly fingerprint the attacker's TCP stack, barely changed Random Forest (6 → 7 false positives) but raised gradient boosting's from 7 to 102. That model was leaning on the fingerprint.</li>
+<li>BIRCH collapsed into one dominant cluster and flagged nearly everything. A high silhouette score (the 2025 report had 0.981) doesn't mean useful detection.</li>
+<li>A random split scored higher than the temporal split for every model: the leakage effect of neighbouring flows from the same burst.</li>
+</ul>
+
+<h2>Engineering</h2>
+<p>Modular package (data, features, models, train, evaluate, predict, API), YAML config with CLI overrides, JSON structured logs, 29 tests (95% coverage) on Python 3.11 and 3.13 in CI. The API fails closed when no keys are configured, returns 422 naming any missing feature, and caps batch size.</p>
+
+<h2>Limitations</h2>
+<ul><li>One attack, one day: cross-dataset evaluation (CIC-DDoS2019) is the next step.</li><li>The Mininet integration is documented (a CSV → API bridge) but was not run; it needs Linux with Open vSwitch.</li></ul>
+
+<p class="crumb"><a href="/#projects">← All projects</a></p>
+</article></div></main>
+<footer><div class="wrap"><span>© 2026 Naveen Narasapur</span><span><a href="mailto:naveennarasapur05@gmail.com">naveennarasapur05@gmail.com</a></span></div></footer>
+</body>
+</html>

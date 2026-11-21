@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zero-shot image classification on AwA2 — Naveen Narasapur</title>
+<meta name="description" content="Case study: recognising unseen animal classes from attributes with ResNet-101 features and a learned compatibility function: 59.0% unseen-class accuracy on the standard Proposed Split, plus an audit of an earlier 90.48% claim.">
+<link rel="canonical" href="https://naveen-narasapur.in/projects/zero-shot.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zero-shot image classification on AwA2">
+<meta property="og:description" content="Case study: recognising unseen animal classes from attributes with ResNet-101 features and a learned compatibility function: 59.0% unseen-class accuracy on the standard Proposed Split, plus an audit of an earlier 90.48% claim.">
+<meta property="og:url" content="https://naveen-narasapur.in/projects/zero-shot.html">
+<meta property="og:image" content="https://naveen-narasapur.in/assets/og.png">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="wrap">
+  <a class="brand" href="/">Naveen Narasapur</a>
+  <nav aria-label="Primary"><ul><li><a href="/#experience">Experience</a></li><li><a href="/#projects">Projects</a></li><li><a href="/resume.pdf">Resume</a></li></ul></nav>
+</div></header>
+<main id="main"><div class="wrap"><article>
+<p class="crumb"><a href="/#projects">← All projects</a></p>
+<h1>Zero-shot image classification on AwA2</h1>
+<div class="meta"><span>2025 → rebuilt 2026</span><span>Python · PyTorch · ResNet</span><span><a href="https://github.com/NaveenNarasapur/zero-shot-awa2">Source on GitHub</a></span></div>
+
+<h2>Problem</h2>
+<p>A conventional classifier can only predict classes it was trained on. Zero-shot learning recognises new classes from a description: here, the 85 semantic attributes of Animals with Attributes 2 ("striped", "aquatic", "has hooves"). The model trains on 40 classes and is tested on 10 it has never seen.</p>
+
+<h2>Approach</h2>
+<figure><svg viewBox="-2 0 706 58" role="img" aria-label="One learned mapping into attribute space; any class with an attribute vector can be scored without retraining." style="color:var(--text);font-family:var(--sans)"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor" fill-opacity=".6"/></marker></defs><rect x="0" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="75.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Image</text><text x="75.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">AwA2</text><line x1="150" y1="29" x2="181" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="184" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="259.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">ResNet-101</text><text x="259.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">frozen, 2048-d</text><line x1="334" y1="29" x2="365" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="368" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="443.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Learned W</text><text x="443.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">2048 → 85</text><line x1="518" y1="29" x2="549" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="552" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="627.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Cosine score</text><text x="627.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">vs each class's attributes</text></svg><figcaption>One learned mapping into attribute space; any class with an attribute vector can be scored without retraining.</figcaption></figure>
+<ul>
+<li><b>Standard protocol.</b> Proposed Split (Xian et al., 2018), whose unseen classes are disjoint from ImageNet-1k so the pretrained backbone can't leak them. Load-time checks fail if any unseen image reaches training.</li>
+<li><b>Honest model selection.</b> Hyper-parameters are chosen on 13 validation classes disjoint from the 27 training classes, imitating the test condition. The test set is touched once.</li>
+<li><b>GZSL calibration.</b> Calibrated stacking subtracts γ from seen-class scores to counter the bias toward training classes; γ is tuned on validation only.</li>
+</ul>
+
+<h2>Results</h2>
+<table>
+<tr><th></th><th>ZSL accuracy (10 unseen, mean per class)</th><th>GZSL unseen / seen / H</th></tr>
+<tr><td><b>Bilinear compatibility</b></td><td><b>59.0%</b></td><td>45.5 / 80.9 / 58.2 (calibrated) · 20.3 / 86.8 / 32.9 (raw)</td></tr>
+<tr><td>ESZSL baseline</td><td>47.6%</td><td>46.5 / 61.0 / 52.8</td></tr>
+<tr><td><i>Published, same features: ALE / DeViSE</i></td><td><i>62.5 / 59.7</i></td><td><i>raw H 23.9 / 27.8</i></td></tr>
+</table>
+<p>Errors are semantic neighbours: dolphin → blue whale (67%), seal → walrus (46%), bat → rat (40%). Their attribute signatures are nearly identical, which is the known limit of attribute-only zero-shot learning.</p>
+
+<h2>Auditing my own earlier number</h2>
+<p>My 2025 paper reported 90.48% accuracy. The original code is lost, so I tested what that number is consistent with, on the same data:</p>
+<table>
+<tr><th>Measurement</th><th>Result</th></tr>
+<tr><td>Standard zero-shot accuracy (this project)</td><td>59.0%</td></tr>
+<tr><td>Conventional 40-way classification of seen classes</td><td>92.7% per-class / 94.5% overall</td></tr>
+<tr><td>Zero-shot on random, non-standard class splits</td><td>64–85%</td></tr>
+<tr><td>Binary seen-vs-unseen detection</td><td>72.6% (AUROC 0.84)</td></tr>
+</table>
+<p>The paper used a custom split, reported binary-classification metrics and compared against out-of-distribution detectors. 90.48% matches conventional or non-standard-split accuracy, not standard zero-shot performance, so I treat it as unverified and report 59.0%.</p>
+
+<h2>Engineering</h2>
+<p>Independent modules (features, semantic, model, train, metrics, inference), YAML config, checkpoints, deterministic training enforced by a test, 14 tests and CI; runs on CPU in about a minute.</p>
+
+<p class="crumb"><a href="/#projects">← All projects</a></p>
+</article></div></main>
+<footer><div class="wrap"><span>© 2026 Naveen Narasapur</span><span><a href="mailto:naveennarasapur05@gmail.com">naveennarasapur05@gmail.com</a></span></div></footer>
+</body>
+</html>

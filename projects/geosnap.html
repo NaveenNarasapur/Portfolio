@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GeoSnap: privacy-first geotagging camera PWA — Naveen Narasapur</title>
+<meta name="description" content="Case study: a React + TypeScript PWA that embeds and verifies GPS EXIF in camera JPEGs entirely in the browser, with lossless metadata rewriting.">
+<link rel="canonical" href="https://naveen-narasapur.in/projects/geosnap.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GeoSnap: privacy-first geotagging camera PWA">
+<meta property="og:description" content="Case study: a React + TypeScript PWA that embeds and verifies GPS EXIF in camera JPEGs entirely in the browser, with lossless metadata rewriting.">
+<meta property="og:url" content="https://naveen-narasapur.in/projects/geosnap.html">
+<meta property="og:image" content="https://naveen-narasapur.in/assets/og.png">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="wrap">
+  <a class="brand" href="/">Naveen Narasapur</a>
+  <nav aria-label="Primary"><ul><li><a href="/#experience">Experience</a></li><li><a href="/#projects">Projects</a></li><li><a href="/resume.pdf">Resume</a></li></ul></nav>
+</div></header>
+<main id="main"><div class="wrap"><article>
+<p class="crumb"><a href="/#projects">← All projects</a></p>
+<h1>GeoSnap: privacy-first geotagging camera PWA</h1>
+<div class="meta"><span>2026</span><span>Solo project</span><span>React 19 · TypeScript · Vite · piexifjs · Workbox · Cloudflare Pages</span><span><a href="https://github.com/NaveenNarasapur/geosnap">Source on GitHub</a></span></div>
+
+<h2>Problem</h2>
+<p>Field and site photos often need trustworthy location data: proof of a visit, an inspection, a delivery. Phone cameras either strip location or bury it, and most "GPS camera" apps upload photos to a server and draw coordinates onto the pixels, which is lossy and can't be read back by software. I wanted a tool that writes <em>real</em> EXIF GPS tags, never uploads the photo, and is honest about whether it worked.</p>
+
+<h2>Architecture</h2>
+<figure><svg viewBox="-2 0 706 152" role="img" aria-label="Capture → locate → embed → verify → export. Everything runs client-side; the only network call is an opt-in reverse-geocode." style="color:var(--text);font-family:var(--sans)"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor" fill-opacity=".6"/></marker></defs><rect x="0" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="75.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Camera</text><text x="75.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">ImageCapture API</text><line x1="150" y1="29" x2="181" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="184" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="259.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">GPS fix</text><text x="259.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">Geolocation API</text><line x1="334" y1="29" x2="365" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="368" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="443.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">EXIF writer</text><text x="443.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">DMS rationals → APP1</text><line x1="518" y1="29" x2="549" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="552" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="627.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Verifier</text><text x="627.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">re-parse & compare</text><path d="M627.0 56 V76 H75.0 V93" fill="none" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="0" y="96" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="75.0" y="120" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Export</text><text x="75.0" y="138" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">JPEG / PNG / WebP</text><line x1="150" y1="123" x2="181" y2="123" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="184" y="96" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="259.0" y="120" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Optional lookup</text><text x="259.0" y="138" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">Nominatim, user-triggered</text></svg><figcaption>Capture → locate → embed → verify → export. Everything runs client-side; the only network call is an opt-in reverse-geocode.</figcaption></figure>
+<ul>
+<li><b>Capture.</b> On Chromium with a rear camera, <code>ImageCapture.takePhoto()</code> returns a full-sensor JPEG; elsewhere the frame is taken from the video stream at native resolution. Camera tracks are stopped as soon as the user leaves the screen.</li>
+<li><b>Lossless metadata rewrite.</b> For GPS-only and "original" exports at quality ≥ 92%, the camera's JPEG bytes are kept and only the APP1/EXIF segment is replaced, so the compressed image data stays byte-identical.</li>
+<li><b>Verify, don't assume.</b> After writing, the file is parsed again and the coordinates compared with the fix. If the check fails the UI does not claim the photo is geotagged.</li>
+<li><b>Offline & private.</b> A Workbox service worker precaches only the app shell. There is deliberately no runtime caching, so photos, coordinates and geocoding responses are never persisted.</li>
+</ul>
+
+<h2>Key decisions</h2>
+<table>
+<tr><th>Decision</th><th>Alternative</th><th>Why</th></tr>
+<tr><td>Client-only processing</td><td>Upload to a backend for EXIF writing</td><td>Location + photo is sensitive data; no server means nothing to secure or leak, and zero hosting cost.</td></tr>
+<tr><td>Rewrite APP1 in place</td><td>Decode → canvas → re-encode</td><td>Re-encoding loses quality and drops the camera's own metadata. In-place rewrite is lossless.</td></tr>
+<tr><td>Independent read-back (exifr)</td><td>Trust the writer library</td><td>Catches writer bugs, e.g. DMS rounding at 59.99999″, that a single library would hide.</td></tr>
+<tr><td>Lazy-load the editor</td><td>One bundle</td><td>Keeps first load at ~82 kB gzip; the overlay editor (~18 kB) loads on demand.</td></tr>
+</table>
+
+<h2>Limitations</h2>
+<ul>
+<li>PNG and WebP GPS metadata is not reliably read by common photo viewers, so those exports show coordinates only as an overlay, and the UI says so.</li>
+<li>Safari and Firefox lack <code>ImageCapture</code> and torch control; those paths fall back to stream-resolution frames.</li>
+<li>Real-device checks (GPS accuracy outdoors, iOS install flow) are still a manual checklist.</li>
+</ul>
+<h2>Next version</h2>
+<ul><li>Add automated EXIF round-trip tests and run them in CI on every push.</li><li>Batch capture with a per-session GPX track export.</li><li>Optional signed hash of image + coordinates to make tampering detectable.</li></ul>
+
+<p class="crumb"><a href="/#projects">← All projects</a></p>
+</article></div></main>
+<footer><div class="wrap"><span>© 2026 Naveen Narasapur</span><span><a href="mailto:naveennarasapur05@gmail.com">naveennarasapur05@gmail.com</a></span></div></footer>
+</body>
+</html>

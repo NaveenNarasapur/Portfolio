@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay: reliable webhook delivery service — Naveen Narasapur</title>
+<meta name="description" content="Case study: a FastAPI + PostgreSQL webhook delivery service with at-least-once delivery, SKIP LOCKED workers, exponential backoff, idempotency keys and a dead-letter queue. 44 tests, ~1,000 deliveries/s.">
+<link rel="canonical" href="https://naveen-narasapur.in/projects/webhook-relay.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Relay: reliable webhook delivery service">
+<meta property="og:description" content="Case study: a FastAPI + PostgreSQL webhook delivery service with at-least-once delivery, SKIP LOCKED workers, exponential backoff, idempotency keys and a dead-letter queue. 44 tests, ~1,000 deliveries/s.">
+<meta property="og:url" content="https://naveen-narasapur.in/projects/webhook-relay.html">
+<meta property="og:image" content="https://naveen-narasapur.in/assets/og.png">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="wrap">
+  <a class="brand" href="/">Naveen Narasapur</a>
+  <nav aria-label="Primary"><ul><li><a href="/#experience">Experience</a></li><li><a href="/#projects">Projects</a></li><li><a href="/resume.pdf">Resume</a></li></ul></nav>
+</div></header>
+<main id="main"><div class="wrap"><article>
+<p class="crumb"><a href="/#projects">← All projects</a></p>
+<h1>Relay: reliable webhook delivery service</h1>
+<div class="meta"><span>2026</span><span>Solo project</span><span>Python · FastAPI · PostgreSQL 16 · Docker · GitHub Actions</span><span><a href="https://github.com/NaveenNarasapur/webhook-relay">Source on GitHub</a></span></div>
+
+<h2>Problem</h2>
+<p>Every SaaS product that sends webhooks hits the same problems: receivers go down, time out, rate-limit, or return errors; producers retry and create duplicates; workers crash mid-request. Relay accepts an event once and guarantees each subscribed endpoint eventually receives it, or the delivery lands in a dead-letter queue where it can be inspected and replayed.</p>
+
+<h2>Architecture</h2>
+<figure><svg viewBox="-2 0 706 152" role="img" aria-label="The event and its fan-out deliveries are written in one transaction; workers claim due rows without blocking each other; every outcome is a guarded state transition." style="color:var(--text);font-family:var(--sans)"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor" fill-opacity=".6"/></marker></defs><rect x="0" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="75.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Producer</text><text x="75.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">POST /v1/events</text><line x1="150" y1="29" x2="181" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="184" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="259.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">API</text><text x="259.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">auth · idempotency</text><line x1="334" y1="29" x2="365" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="368" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="443.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">PostgreSQL</text><text x="443.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">event + deliveries, 1 txn</text><line x1="518" y1="29" x2="549" y2="29" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="552" y="2" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="627.0" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Workers ×N</text><text x="627.0" y="44" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">SKIP LOCKED + lease</text><path d="M627.0 56 V76 H75.0 V93" fill="none" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="0" y="96" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="75.0" y="120" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Receiver</text><text x="75.0" y="138" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">HMAC-signed POST</text><line x1="150" y1="123" x2="181" y2="123" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="184" y="96" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="259.0" y="120" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Record</text><text x="259.0" y="138" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">guarded UPDATE</text><line x1="334" y1="123" x2="365" y2="123" stroke="currentColor" stroke-opacity=".5" marker-end="url(#a)"/><rect x="368" y="96" width="150" height="54" rx="8" fill="none" stroke="currentColor" stroke-opacity=".45"/><text x="443.0" y="120" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Retry / DLQ</text><text x="443.0" y="138" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".65">backoff · replay</text></svg><figcaption>The event and its fan-out deliveries are written in one transaction; workers claim due rows without blocking each other; every outcome is a guarded state transition.</figcaption></figure>
+<ul>
+<li><b>No lost events.</b> The event row and one delivery row per matching endpoint are inserted in one transaction (outbox pattern), so an accepted event can't exist without its deliveries.</li>
+<li><b>No duplicate events.</b> <code>UNIQUE(tenant, idempotency_key)</code>; a retried POST returns the original event, and the same key with a different body returns 409. Twenty concurrent identical requests produce exactly one event.</li>
+<li><b>Safe concurrency.</b> Workers claim with <code>UPDATE … WHERE id IN (SELECT … FOR UPDATE SKIP LOCKED)</code> and set a lease. A crashed worker's rows are reclaimed when its lease expires, and its late write is rejected because <code>attempts</code> no longer matches.</li>
+<li><b>Polite retries.</b> Exponential backoff with full jitter, <code>Retry-After</code> honoured, permanent 4xx not retried, dead-lettered after N attempts.</li>
+<li><b>Security.</b> Hashed API keys with tenant isolation, HMAC-SHA256 signatures with a replay window, and SSRF blocking of private/metadata addresses at registration and again at send time.</li>
+</ul>
+
+<h2>Key decisions</h2>
+<table>
+<tr><th>Decision</th><th>Alternative</th><th>Why</th></tr>
+<tr><td>PostgreSQL as the queue</td><td>Kafka / RabbitMQ</td><td>Transactional with the event write, one system to run, inspectable with SQL. Measured ~1k deliveries/s on 2 CPUs; a broker becomes worth it at much higher volume or for many consumer groups.</td></tr>
+<tr><td>At-least-once</td><td>Exactly-once</td><td>Impossible over HTTP (an ACK can be lost after processing). A stable <code>relay-delivery-id</code> lets receivers dedupe.</td></tr>
+<tr><td>Leases</td><td>Hold a transaction during the HTTP call</td><td>Would pin a connection and row locks for up to the 10 s timeout per request.</td></tr>
+<tr><td>Full jitter</td><td>Plain exponential backoff</td><td>Prevents synchronised retry storms when a receiver recovers.</td></tr>
+</table>
+
+<h2>Testing and measurements</h2>
+<p>44 pytest tests run against real PostgreSQL in CI: 5xx, timeouts, connection errors, 404/410 to dead-letter, max attempts, <code>Retry-After</code>, replay, crashed worker plus stale write, four concurrent workers (60 events, zero double deliveries) and concurrent duplicate POSTs. A real-process demo (API + worker + receiver that fails twice) shows 503 → 503 → 200 on attempt 3. A benchmark of the claim → deliver → record loop measured ~800 deliveries/s with one worker and ~1,040/s with four on a 2-CPU VM. The receiver there is an in-memory mock, so this is Relay's own database overhead, not network delivery speed.</p>
+
+<h2>Limitations and next steps</h2>
+<ul><li>No per-endpoint circuit breaker or rate limit yet.</li><li>DNS-rebinding window between the SSRF check and the connection; fix by pinning the resolved IP or using an egress proxy.</li><li>No retention job for old attempts; add partitioning or pruning.</li><li>Prometheus metrics endpoint.</li></ul>
+
+<p class="crumb"><a href="/#projects">← All projects</a></p>
+</article></div></main>
+<footer><div class="wrap"><span>© 2026 Naveen Narasapur</span><span><a href="mailto:naveennarasapur05@gmail.com">naveennarasapur05@gmail.com</a></span></div></footer>
+</body>
+</html>
