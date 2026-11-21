@@ -8,10 +8,10 @@
   --mono:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --wide:60rem; --text:44rem;
 }
-@media (prefers-color-scheme: dark){
-  :root{ --bg:#0f141b; --surface:#161d27; --soft:#1b2430; --ink:#e6eaef; --slate:#a3aebb; --faint:#738091;
+:root[data-theme="dark"]{ --bg:#0f141b; --surface:#161d27; --soft:#1b2430; --ink:#e6eaef; --slate:#a3aebb; --faint:#738091;
     --line:#26303c; --accent:#8cb4ff; --accent-soft:#1a2638; --code:#1c2430; }
-}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0f141b; --surface:#161d27; --soft:#1b2430; --ink:#e6eaef; --slate:#a3aebb; --faint:#738091;
+    --line:#26303c; --accent:#8cb4ff; --accent-soft:#1a2638; --code:#1c2430; } }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);text-rendering:optimizeLegibility}
@@ -138,7 +138,19 @@ dl.skills{background:var(--surface);border:1px solid var(--line);border-radius:1
 .contact{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.6rem 1.5rem!important;margin:0 0 3.5rem}
 .contact h2{margin-bottom:.8rem!important}
 .contact h2{font-size:1.45rem;line-height:1.25;font-weight:700;letter-spacing:-.01em}
-@media (prefers-color-scheme: dark){ .btn.primary{color:#0f141b} }
+:root[data-theme="dark"] .btn.primary{color:#0f141b}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .btn.primary{color:#0f141b} }
 @media (max-width:760px){ .hero-band{background:
   radial-gradient(circle at 1px 1px, color-mix(in srgb,var(--accent) 12%,transparent) 1px, transparent 0) 0 0/22px 22px,
   linear-gradient(180deg, color-mix(in srgb,var(--accent) 14%,var(--bg)) 0%, var(--bg) 100%)} }
+
+/* theme toggle */
+.nav-right{display:flex;align-items:center;gap:1.2rem}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:2.1rem;height:2.1rem;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;padding:0}
+.theme-toggle:hover{border-color:var(--faint)}
+.theme-toggle svg{width:1.05rem;height:1.05rem}
+.theme-toggle .sun{display:none}
+:root[data-theme="dark"] .theme-toggle .sun{display:block}
+:root[data-theme="dark"] .theme-toggle .moon{display:none}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .theme-toggle .sun{display:block} :root:not([data-theme="light"]) .theme-toggle .moon{display:none} }
+.brand{white-space:nowrap} @media (max-width:640px){ .nav-right{gap:.8rem} }
