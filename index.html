@@ -6,7 +6,7 @@
 <title>Naveen Narasapur, backend software engineer</title>
 <meta name="description" content="Naveen Narasapur is a backend software engineer who builds tested Python, FastAPI and PostgreSQL services. Develops enterprise integrations at KPMG Global Services. B.E. CSE (AI), KLE Tech, 8.90 CGPA.">
 <link rel="canonical" href="https://naveen-narasapur.in/">
-<meta name="theme-color" content="#eef2f6">
+<meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="profile">
 <meta property="og:title" content="Naveen Narasapur, backend software engineer">
 <meta property="og:description" content="Backend services in Python and PostgreSQL, built to survive retries, crashes and concurrency.">
@@ -40,37 +40,20 @@
 <main id="main">
 <div class="wrap">
   <section class="hero" aria-labelledby="hero-h">
-    <div>
-      <p class="status"><i aria-hidden="true"></i>Open to SDE-1 and backend roles in Bangalore, Hyderabad or Pune</p>
-      <h1 id="hero-h">Naveen Narasapur</h1>
-      <p class="headline">Backend software engineer. I build services that stay correct when requests are retried, workers crash and the other side goes down.</p>
-      <p class="lede">I develop enterprise integrations at KPMG Global Services. Outside work I build backend systems end to end in Python and PostgreSQL, and I test the failure paths, not just the happy one.</p>
-      <div class="actions">
-        <a class="btn primary" href="/resume.pdf">Download résumé</a>
-        <a class="btn" href="https://github.com/NaveenNarasapur" rel="me">GitHub</a>
-        <a class="btn" href="https://www.linkedin.com/in/naveen-narasapur-936226256" rel="me">LinkedIn</a>
-      </div>
-      <ul class="creds">
-        <li><b>8.90 CGPA</b>, B.E. CSE (AI)</li>
-        <li><b>CodeChef 3★</b>, max 1632</li>
-        <li><b>GATE DA 2026</b>, AIR 4561</li>
-      </ul>
+    <h1 id="hero-h">Naveen Narasapur</h1>
+    <p class="role-title">Software Engineer, Backend</p>
+    <p class="lede">I build backend services in Python and PostgreSQL that stay correct under retries, crashes and concurrent load, and I test the failure paths as carefully as the happy path. I currently develop enterprise integrations at KPMG Global Services, and I am looking for SDE-1 and backend engineering roles.</p>
+    <div class="actions">
+      <a class="btn primary" href="/resume.pdf">Download résumé</a>
+      <a class="btn" href="https://github.com/NaveenNarasapur" rel="me">GitHub</a>
+      <a class="btn" href="https://www.linkedin.com/in/naveen-narasapur-936226256" rel="me">LinkedIn</a>
+      <a class="btn" href="mailto:naveennarasapur05@gmail.com">Email</a>
     </div>
-
-    <figure class="trace" aria-label="Example log of one webhook delivery through Relay: the first attempt fails with 503, is retried with jittered backoff, and succeeds.">
-      <div class="bar"><b>relay</b><span>one event, two subscribers</span></div>
-      <ol>
-        <li><span class="t">00.000</span><span><span class="k">POST</span> /v1/events  key=ord_1042  <span class="ok">202 accepted</span></span></li>
-        <li><span class="t">00.004</span><span>event + 2 deliveries written in one transaction</span></li>
-        <li><span class="t">00.011</span><span>worker-2 claims dlv_7f3a  <span class="t">SKIP LOCKED, lease 30s</span></span></li>
-        <li><span class="t">00.140</span><span>attempt 1 → shop.example/hooks  <span class="warn">503</span></span></li>
-        <li><span class="t">00.141</span><span>retry in 1.8s  <span class="t">exponential backoff, full jitter</span></span></li>
-        <li><span class="t">02.060</span><span>attempt 2 → shop.example/hooks  <span class="ok">200 delivered</span></span></li>
-        <li><span class="t">02.075</span><span>dlv_7f3b → crm.example/in  <span class="bad">410 gone</span></span></li>
-        <li><span class="t">02.076</span><span>dlv_7f3b moved to dead-letter queue  <span class="t">replayable</span></span></li>
-      </ol>
-      <figcaption>An example run of Relay, my webhook delivery service. <a href="/projects/webhook-relay.html">How it works</a></figcaption>
-    </figure>
+    <ul class="creds">
+      <li><b>B.E. CSE (AI)</b>, KLE Tech, CGPA 8.90</li>
+      <li><b>CodeChef 3★</b>, max rating 1632</li>
+      <li><b>GATE DA 2026</b>, AIR 4561</li>
+    </ul>
   </section>
 
   <section class="sec cols about" id="about" aria-labelledby="about-h">
@@ -85,8 +68,7 @@
     <h2 id="exp-h">Experience</h2>
     <ol class="timeline">
       <li class="now">
-        <span class="when">Sep 2026 to present</span>
-        <h3>Analyst, Advisory</h3>
+        <div class="head"><h3>Analyst, Advisory</h3><span class="when">Sep 2026 to present</span></div>
         <p class="org">KPMG Global Services, Oracle practice</p>
         <ul class="work">
           <li>Develop and support integrations between Oracle HCM Cloud and connected enterprise systems on Oracle Integration Cloud, built from adapters, data mappings and orchestrated flows.</li>
@@ -94,8 +76,7 @@
         </ul>
       </li>
       <li>
-        <span class="when">Jan 2026 to Jul 2026</span>
-        <h3>Intern</h3>
+        <div class="head"><h3>Intern</h3><span class="when">Jan 2026 to Jul 2026</span></div>
         <p class="org">KPMG Global Services, Oracle practice</p>
         <ul class="work">
           <li>Built real-time integrations that move data between systems, using Oracle Integration Cloud adapters, field mappings and orchestration workflows.</li>
@@ -110,51 +91,43 @@
   <section class="sec" id="projects" aria-labelledby="proj-h">
     <h2 id="proj-h">Projects</h2>
 
-    <article class="featured">
-      <div>
-        <h3><a href="/projects/webhook-relay.html">Relay, a reliable webhook delivery service</a></h3>
-        <p>Accepts an event once and guarantees every subscribed endpoint eventually receives it. Events and their deliveries are written in one transaction, workers claim jobs with <code>FOR UPDATE SKIP LOCKED</code> and leases, failures retry with jittered backoff, and idempotency keys plus a dead-letter queue with replay handle the rest.</p>
-        <ul class="tags"><li>Python</li><li>FastAPI</li><li>PostgreSQL</li><li>pytest</li><li>Docker</li><li>GitHub Actions</li></ul>
-        <div class="links"><a href="/projects/webhook-relay.html">Read the case study</a><a href="https://github.com/NaveenNarasapur/webhook-relay">Source code</a></div>
-      </div>
-      <ul class="numbers">
-        <li><b>44</b>tests against real PostgreSQL, including crashed and concurrent workers</li>
-        <li><b>~1,000/s</b>deliveries on 2 CPUs</li>
-        <li><b>0</b>double deliveries with 4 workers competing</li>
-      </ul>
+    <article class="project">
+      <div class="head"><h3><a href="/projects/webhook-relay.html">Relay: reliable webhook delivery service</a></h3><span class="lang">Python, FastAPI, PostgreSQL</span></div>
+      <p>Accepts an event once and guarantees every subscribed endpoint eventually receives it. Events and deliveries are written in one transaction, workers claim jobs with <code>FOR UPDATE SKIP LOCKED</code> and leases, failures retry with jittered backoff, and idempotency keys and a dead-letter queue with replay cover the rest.</p>
+      <ul class="results"><li><b>44 tests</b> on real PostgreSQL</li><li><b>~1,000 deliveries/s</b> on 2 CPUs</li><li><b>0 double deliveries</b> with 4 concurrent workers</li></ul>
+      <div class="links"><a href="/projects/webhook-relay.html">Case study</a><a href="https://github.com/NaveenNarasapur/webhook-relay">Source code</a></div>
     </article>
 
-    <div class="grid">
-      <article class="card">
-        <h3><a href="/projects/ddos-detection.html">DDoS flow detection service</a></h3>
-        <p class="lang">Python, scikit-learn, FastAPI</p>
-        <p>Compares five models on 223K network flows from CIC-IDS2017 under a leakage-safe temporal split, then serves the best one behind an authenticated API. F1 0.998 at a 0.02% false-positive rate.</p>
-        <div class="links"><a href="/projects/ddos-detection.html">Case study</a><a href="https://github.com/NaveenNarasapur/ddos-detection">Code</a></div>
-      </article>
-      <article class="card">
-        <h3><a href="/projects/zero-shot.html">Zero-shot image classification</a></h3>
-        <p class="lang">PyTorch, ResNet-101 features</p>
-        <p>Recognises animal classes it never saw in training from their attributes: 59.0% unseen-class accuracy on the standard AwA2 split, close to the published ALE baseline of 62.5%.</p>
-        <div class="links"><a href="/projects/zero-shot.html">Case study</a><a href="https://github.com/NaveenNarasapur/zero-shot-awa2">Code</a></div>
-      </article>
-      <article class="card">
-        <h3><a href="/projects/geosnap.html">GeoSnap camera app</a></h3>
-        <p class="lang">React, TypeScript, PWA</p>
-        <p>Writes GPS data into camera photos entirely in the browser, rewriting only the metadata so the image itself is untouched, then re-reads the file to verify. Works offline; photos never leave the phone.</p>
-        <div class="links"><a href="/projects/geosnap.html">Case study</a><a href="https://github.com/NaveenNarasapur/geosnap">Code</a></div>
-      </article>
-    </div>
+    <article class="project">
+      <div class="head"><h3><a href="/projects/ddos-detection.html">DDoS flow detection service</a></h3><span class="lang">Python, scikit-learn, FastAPI</span></div>
+      <p>Compares five models on 223K network flows from CIC-IDS2017 under a leakage-safe temporal split, then serves the best one behind an authenticated API with a metrics dashboard.</p>
+      <ul class="results"><li><b>F1 0.998</b></li><li><b>0.02%</b> false-positive rate</li><li><b>29 tests</b>, 95% coverage</li></ul>
+      <div class="links"><a href="/projects/ddos-detection.html">Case study</a><a href="https://github.com/NaveenNarasapur/ddos-detection">Source code</a></div>
+    </article>
+
+    <article class="project">
+      <div class="head"><h3><a href="/projects/zero-shot.html">Zero-shot image classification</a></h3><span class="lang">PyTorch</span></div>
+      <p>Recognises animal classes never seen in training from their attributes, evaluated on the standard AwA2 split. Includes an audit correcting an earlier, non-standard accuracy figure.</p>
+      <ul class="results"><li><b>59.0%</b> unseen-class accuracy</li><li>published ALE baseline 62.5%</li></ul>
+      <div class="links"><a href="/projects/zero-shot.html">Case study</a><a href="https://github.com/NaveenNarasapur/zero-shot-awa2">Source code</a></div>
+    </article>
+
+    <article class="project">
+      <div class="head"><h3><a href="/projects/geosnap.html">GeoSnap: geotagging camera app</a></h3><span class="lang">React, TypeScript, PWA</span></div>
+      <p>Writes GPS data into camera photos entirely in the browser, rewriting only the metadata so the image is untouched, then re-reads the file to verify. Works offline; photos never leave the device.</p>
+      <div class="links"><a href="/projects/geosnap.html">Case study</a><a href="https://github.com/NaveenNarasapur/geosnap">Source code</a></div>
+    </article>
   </section>
 
   <section class="sec" id="skills" aria-labelledby="skills-h">
     <h2 id="skills-h">Skills</h2>
     <dl class="skills">
-      <div><dt>Languages</dt><dd>Python, C++, SQL, PL/SQL, JavaScript, TypeScript</dd></div>
-      <div><dt>Backend and data</dt><dd>FastAPI, REST API design, PostgreSQL, Oracle SQL, Oracle Integration Cloud</dd></div>
-      <div><dt>Engineering practice</dt><dd>pytest, GitHub Actions CI, Docker, Git, Linux, Cloudflare Workers</dd></div>
-      <div><dt>Computer science</dt><dd>Data structures and algorithms, OOP, operating systems, networks, DBMS</dd></div>
-      <div><dt>Machine learning</dt><dd>PyTorch, scikit-learn, pandas, NumPy</dd></div>
-      <div><dt>Frontend</dt><dd>React, HTML, CSS, progressive web apps</dd></div>
+      <dt>Languages</dt><dd>Python, C++, SQL, PL/SQL, JavaScript, TypeScript</dd>
+      <dt>Backend and data</dt><dd>FastAPI, REST API design, PostgreSQL, Oracle SQL, Oracle Integration Cloud</dd>
+      <dt>Engineering practice</dt><dd>pytest, GitHub Actions CI, Docker, Git, Linux, Cloudflare Workers</dd>
+      <dt>Computer science</dt><dd>Data structures and algorithms, OOP, operating systems, networks, DBMS</dd>
+      <dt>Machine learning</dt><dd>PyTorch, scikit-learn, pandas, NumPy</dd>
+      <dt>Frontend</dt><dd>React, HTML, CSS, progressive web apps</dd>
     </dl>
   </section>
 
@@ -177,15 +150,10 @@
     </section>
   </div>
 
-  <section class="contact" id="contact" aria-labelledby="contact-h">
-    <div>
-      <h2 id="contact-h">Hiring for a backend role?</h2>
-      <p>Email is the fastest way to reach me. I am happy to talk about any of these projects in depth.</p>
-    </div>
-    <div>
-      <a class="mail" href="mailto:naveennarasapur05@gmail.com">naveennarasapur05@gmail.com</a>
-      <div class="elsewhere"><a href="https://github.com/NaveenNarasapur">GitHub</a><a href="https://www.linkedin.com/in/naveen-narasapur-936226256">LinkedIn</a><a href="https://leetcode.com/u/nave05/">LeetCode</a><a href="https://www.codechef.com/users/nave05">CodeChef</a></div>
-    </div>
+  <section class="sec contact" id="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h">Contact</h2>
+    <p>Email is the fastest way to reach me: <a href="mailto:naveennarasapur05@gmail.com">naveennarasapur05@gmail.com</a></p>
+    <div class="elsewhere"><a href="https://github.com/NaveenNarasapur">GitHub</a><a href="https://www.linkedin.com/in/naveen-narasapur-936226256">LinkedIn</a><a href="https://leetcode.com/u/nave05/">LeetCode</a><a href="https://www.codechef.com/users/nave05">CodeChef</a></div>
   </section>
 </div>
 </main>
